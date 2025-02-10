@@ -11,7 +11,7 @@ $form.Size = New-Object System.Drawing.Size(450, 350)
 $form.StartPosition = "CenterScreen"
 
 # Set window icon
-$iconPath = "C:\Users\Admin\Desktop\Data\VS-Code\LF3_Subnet_Calculator\Icon256x256.ico"  # Change this to your actual icon path
+$iconPath = "$PWD\Icon256x256.ico"
 if (Test-Path $iconPath) {
     $form.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($iconPath)
 }
@@ -51,7 +51,7 @@ $labelResult.Size = New-Object System.Drawing.Size(360, 180)
 $form.Controls.Add($labelResult)
 
 # Validate IP address and Subnet Mask
-function Validate-IPSubnet {
+function Test-IPSubnet {
     param (
         [string]$ip,
         [string]$subnet
@@ -72,7 +72,6 @@ function Validate-IPSubnet {
         "255.255.255.240", "255.255.255.248", "255.255.255.252",
         "255.255.255.254", "255.255.255.255"
     )
-
     return ($ip -match $ipPattern) -and ($subnet -in $validSubnets)
 }
 
@@ -81,7 +80,7 @@ $buttonCalculate.Add_Click({
     $ip = $textBoxIP.Text.Trim()
     $subnet = $textBoxSubnet.Text.Trim()
 
-    if (-not (Validate-IPSubnet -ip $ip -subnet $subnet)) {
+    if (-not (Test-IPSubnet -ip $ip -subnet $subnet)) {
         [System.Windows.Forms.MessageBox]::Show("Invalid IP Address or Subnet Mask!", "Error", "OK", "Error")
         return
     }
@@ -131,7 +130,6 @@ Host Count: $($output.Output.HostCount)
 
 Network Address: $($output.Output.NetworkAddress)
 Broadcast Address: $($output.Output.BroadcastAddress)
-
 
 Network Address (Binary): $($output.Output.NetworkBinary)
 Broadcast Address (Binary): $($output.Output.BroadcastBinary)
