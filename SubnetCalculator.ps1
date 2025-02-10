@@ -1,4 +1,5 @@
 Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
 
 # Define JSON file path
 $jsonFile = "ips.json"
@@ -8,6 +9,12 @@ $form = New-Object System.Windows.Forms.Form
 $form.Text = "Subnet Calculator"
 $form.Size = New-Object System.Drawing.Size(450, 350)
 $form.StartPosition = "CenterScreen"
+
+# Set window icon
+$iconPath = "C:\Users\Admin\Desktop\Data\VS-Code\LF3_Subnet_Calculator\Icon256x256.ico"  # Change this to your actual icon path
+if (Test-Path $iconPath) {
+    $form.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($iconPath)
+}
 
 # IP Address Label
 $labelIP = New-Object System.Windows.Forms.Label
@@ -43,7 +50,7 @@ $labelResult.Location = New-Object System.Drawing.Point(10, 110)
 $labelResult.Size = New-Object System.Drawing.Size(360, 180)
 $form.Controls.Add($labelResult)
 
-# validate IP address and Subnet Mask
+# Validate IP address and Subnet Mask
 function Validate-IPSubnet {
     param (
         [string]$ip,
@@ -53,7 +60,7 @@ function Validate-IPSubnet {
     # IP validation regex (ensures each octet is 0-255)
     $ipPattern = "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}$"
 
-    # Subnet Masks validation
+    # Valid subnet masks
     $validSubnets = @(
         "128.0.0.0", "192.0.0.0", "224.0.0.0", "240.0.0.0",
         "248.0.0.0", "252.0.0.0", "254.0.0.0", "255.0.0.0",
@@ -65,6 +72,7 @@ function Validate-IPSubnet {
         "255.255.255.240", "255.255.255.248", "255.255.255.252",
         "255.255.255.254", "255.255.255.255"
     )
+
     return ($ip -match $ipPattern) -and ($subnet -in $validSubnets)
 }
 
@@ -72,7 +80,7 @@ function Validate-IPSubnet {
 $buttonCalculate.Add_Click({
     $ip = $textBoxIP.Text.Trim()
     $subnet = $textBoxSubnet.Text.Trim()
-    
+
     if (-not (Validate-IPSubnet -ip $ip -subnet $subnet)) {
         [System.Windows.Forms.MessageBox]::Show("Invalid IP Address or Subnet Mask!", "Error", "OK", "Error")
         return
@@ -85,7 +93,7 @@ $buttonCalculate.Add_Click({
             $existingData = Get-Content $jsonFile | ConvertFrom-Json
         } catch {}
     }
-    
+
     # Prepare new input data
     $newInputData = @{ 
         Input = @{ 
@@ -93,7 +101,7 @@ $buttonCalculate.Add_Click({
             SubnetMask = $subnet
         }
     }
-    
+
     # Merge input data only if changed
     if ($existingData.PSObject.Properties.Name -contains 'Input') {
         if ($existingData.Input.IPAddress -ne $ip -or $existingData.Input.SubnetMask -ne $subnet) {
@@ -102,10 +110,10 @@ $buttonCalculate.Add_Click({
     } else {
         $existingData["Input"] = $newInputData.Input
     }
-    
+
     # Write updated input data to JSON
     $existingData | ConvertTo-Json -Depth 3 | Out-File -Encoding UTF8 $jsonFile
-    
+
     # Start external program for processing
     Start-Process "$PWD\netz.exe" -WindowStyle Hidden
 
@@ -115,7 +123,7 @@ $buttonCalculate.Add_Click({
     # Read output from JSON after processing
     if (Test-Path $jsonFile) {
         $output = Get-Content $jsonFile | ConvertFrom-Json
-        
+
         if ($output.PSObject.Properties.Name -contains 'Output') {
             # Display results
             $labelResult.Text = @"
