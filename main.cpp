@@ -34,8 +34,10 @@ int calcHosts(std::string mask) {
 }
 
 std::vector<std::bitset<8>> calcNetaddress(std::string& ip, std::string& mask) {
+	//convert ip and mask to binary
 	std::vector<std::bitset<8>> ipBits = toBinary(ip);
 	std::vector<std::bitset<8>> maskBits = toBinary(mask);
+
 	std::vector<std::bitset<8>> netID{};
 
 	//calculates Netaddress
@@ -47,8 +49,10 @@ std::vector<std::bitset<8>> calcNetaddress(std::string& ip, std::string& mask) {
 }
 
 std::vector<std::bitset<8>> calcBroadcast(std::string& ip, std::string& mask) {
+	//convert ip and mask to binary
 	std::vector<std::bitset<8>> ipBits = toBinary(ip);
 	std::vector<std::bitset<8>> maskBits = toBinary(mask);
+
 	std::vector<std::bitset<8>> broadcastID{};
 
 	//calculates Broadcastaddress
@@ -100,11 +104,16 @@ int main() {
 	std::string ip = ips["Input"]["IPAddress"];
 	std::string mask = ips["Input"]["SubnetMask"];
 
+	//validate ip and mask
+	if (!std::regex_match(ip, IPPattern) || std::find(MaskPattern.begin(), MaskPattern.end(), mask) == MaskPattern.end()) {
+		std::cout << "invalid ip or subnetmask";
+		return 0;
+	}
+
 	stream.close();
 
 	//open stream to write
 	stream.open(file, std::ios::out);
-
 
 	//prepare output to json
 	ips["Output"]["HostCount"] = std::to_string( calcHosts(mask) );
