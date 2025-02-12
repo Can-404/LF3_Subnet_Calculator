@@ -112,16 +112,20 @@ int main() {
 
 	stream.close();
 
+	//calculate netaddress and broadcastaddress
+	std::vector<std::bitset<8>> netAddress = calcNetaddress(ip, mask);
+	std::vector<std::bitset<8>> broadcast = calcBroadcast(ip, mask);
+
 	//open stream to write
 	stream.open(file, std::ios::out);
 
 	//prepare output to json
 	ips["Output"]["HostCount"] = std::to_string( calcHosts(mask) );
-	ips["Output"]["NetworkAddress"] = printDecimal( calcNetaddress(ip, mask) );
-	ips["Output"]["NetworkBinary"] = printBinary( calcNetaddress(ip, mask) );
-	ips["Output"]["BroadcastAddress"] = printDecimal( calcBroadcast(ip, mask) );
-	ips["Output"]["BroadcastBinary"] = printBinary( calcBroadcast(ip, mask) );
-	ips["Output"]["SubnetMaskBinary"] = printBinary(toBinary(mask));
+	ips["Output"]["NetworkAddress"] = printDecimal( netAddress );
+	ips["Output"]["NetworkBinary"] = printBinary( netAddress );
+	ips["Output"]["BroadcastAddress"] = printDecimal( broadcast );
+	ips["Output"]["BroadcastBinary"] = printBinary( broadcast );
+	ips["Output"]["SubnetMaskBinary"] = printBinary( toBinary(mask) );
 	ips["Output"]["IPBinary"] = printBinary( toBinary(ip) );
 
 	//write to json
