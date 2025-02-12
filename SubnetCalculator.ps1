@@ -142,4 +142,4 @@ IP (Binary): $($output.Output.IPBinary)
 })
 
 # Show the form
-$form.ShowDialog()
+$form.ShowDialog() | Out-Null
