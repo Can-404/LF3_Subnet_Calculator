@@ -1,16 +1,13 @@
-# NetworkCalculator
+# Network Calculator
 
-## Functions
+A lightweight and user-friendly Windows subnet calculator with a GUI and a C++ backend for fast IP calculations.
 
-- Calculates Network Address
-- Calculates Broadcast Address
-- Shows the Maximal Host Count
-- Shows IP, subnet mask, network address and broadcast address in binary
+This project is private and does not have an open-source license. Unauthorized use, modification, or distribution is not allowed.
 
-## Poweshell executable
+## Features
 
-To create a Powershell.exe ps2exe was used with this command:
-- Invoke-PS2EXE "$PWD\SubnetCalculator.ps1" "$PWD\SubnetCalculator.exe" -icon "$PWD\Icon256x256.ico" -noConsole
-
-when ps2exe can not load use:
-- Set-ExecutionPolicy Bypass -Scope Process -Force
+- Validate and calculate subnet details
+- Supports both decimal & binary formats
+- Displays host count, network address, and broadcast address
+-  Works without admin privileges
+- Reads/Writes data in %APPDATA%
